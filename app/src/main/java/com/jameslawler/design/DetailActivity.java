@@ -1,37 +1,90 @@
 package com.jameslawler.design;
 
+import android.animation.Animator;
+import android.graphics.drawable.ColorDrawable;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewAnimationUtils;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 public class DetailActivity extends AppCompatActivity {
+
+    static String baconTitle = "Bacon";
+    static String baconText = "Bacon ipsum dolor amet pork belly meatball kevin spare ribs. Frankfurter swine corned beef meatloaf, strip steak.";
+    static String veggieTitle = "Veggie";
+    static String veggieText = "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+
+        ((CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout)).setTitle(getString(R.string.app_name));
+        RecyclerView rv = (RecyclerView) findViewById(R.id.recyclerview);
+        rv.setLayoutManager(new LinearLayoutManager(this));
+        rv.setAdapter(new RecyclerView.Adapter<ViewHolder>() {
+            @Override
+            public ViewHolder onCreateViewHolder(ViewGroup parent, int position) {
+                return new ViewHolder(getLayoutInflater().inflate(R.layout.list_item, parent, false));
+            }
+
+            @Override
+            public void onBindViewHolder(ViewHolder viewHolder, int position) {
+                viewHolder.text1.setText(baconTitle);
+                viewHolder.text2.setText(baconText);
+            }
+
+            @Override
+            public int getItemCount() {
+                return 10;
+            }
+        });
+
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_detail, menu);
-        return true;
-    }
+    private static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        TextView text1;
+        TextView text2;
+        static int green;
+        static int white;
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        public ViewHolder(View itemView) {
+            super(itemView);
+            text1 = (TextView) itemView.findViewById(android.R.id.text1);
+            text2 = (TextView) itemView.findViewById(android.R.id.text2);
+            itemView.setOnClickListener(this);
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+            if (green == 0)
+                green = itemView.getContext().getResources().getColor(R.color.green);
+            if (white == 0)
+                white = itemView.getContext().getResources().getColor(R.color.background_material_light);
         }
 
-        return super.onOptionsItemSelected(item);
+        @Override
+        public void onClick(View view) {
+            boolean isVeggie = ((ColorDrawable)view.getBackground()) != null && ((ColorDrawable)view.getBackground()).getColor() == green;
+
+            int finalRadius = (int)Math.hypot(view.getWidth()/2, view.getHeight()/2);
+
+            if (isVeggie) {
+                text1.setText(baconTitle);
+                text2.setText(baconText);
+                view.setBackgroundColor(white);
+            } else {
+                Animator anim = ViewAnimationUtils.createCircularReveal(view, (int) view.getWidth() / 2, (int) view.getHeight() / 2, 0, finalRadius);
+                text1.setText(veggieTitle);
+                text2.setText(veggieText);
+                view.setBackgroundColor(green);
+                anim.start();
+            }
+        }
     }
 }
