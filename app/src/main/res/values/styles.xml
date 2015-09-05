@@ -9,4 +9,12 @@
         <item name="android:textColor">#FFF</item>
     </style>
 
+    <style name="FloatingActionButton">
+        <item name="fabSize">normal</item>
+        <item name="elevation">6dp</item>
+        <item name="pressedTranslationZ">12dp</item>
+        <item name="borderWidth">0dp</item>
+        <item name="layout_anchorGravity">bottom|right|end</item>
+    </style>
+
 </resources>
