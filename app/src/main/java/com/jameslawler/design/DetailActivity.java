@@ -15,13 +15,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 public class DetailActivity extends AppCompatActivity {
-
-    static String baconTitle = "Bacon";
-    static String baconText = "Bacon ipsum dolor amet pork belly meatball kevin spare ribs. Frankfurter swine corned beef meatloaf, strip steak.";
-    static String veggieTitle = "Veggie";
-    static String veggieText = "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.";
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,53 +31,28 @@ public class DetailActivity extends AppCompatActivity {
 
             @Override
             public void onBindViewHolder(ViewHolder viewHolder, int position) {
-                viewHolder.text1.setText(baconTitle);
-                viewHolder.text2.setText(baconText);
+                String FizzBuzzOutput = FizzBuzz.GetOutput(position + 1);
+
+                viewHolder.text1.setText(Integer.toString(position + 1));
+                viewHolder.text2.setText(FizzBuzzOutput);
             }
 
             @Override
             public int getItemCount() {
-                return 10;
+                return 100;
             }
         });
 
     }
 
-    private static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private static class ViewHolder extends RecyclerView.ViewHolder {
         TextView text1;
         TextView text2;
-        static int green;
-        static int white;
 
         public ViewHolder(View itemView) {
             super(itemView);
             text1 = (TextView) itemView.findViewById(android.R.id.text1);
             text2 = (TextView) itemView.findViewById(android.R.id.text2);
-            itemView.setOnClickListener(this);
-
-            if (green == 0)
-                green = itemView.getContext().getResources().getColor(R.color.green);
-            if (white == 0)
-                white = itemView.getContext().getResources().getColor(R.color.background_material_light);
-        }
-
-        @Override
-        public void onClick(View view) {
-            boolean isVeggie = ((ColorDrawable)view.getBackground()) != null && ((ColorDrawable)view.getBackground()).getColor() == green;
-
-            int finalRadius = (int)Math.hypot(view.getWidth()/2, view.getHeight()/2);
-
-            if (isVeggie) {
-                text1.setText(baconTitle);
-                text2.setText(baconText);
-                view.setBackgroundColor(white);
-            } else {
-                Animator anim = ViewAnimationUtils.createCircularReveal(view, (int) view.getWidth() / 2, (int) view.getHeight() / 2, 0, finalRadius);
-                text1.setText(veggieTitle);
-                text2.setText(veggieText);
-                view.setBackgroundColor(green);
-                anim.start();
-            }
         }
     }
 }
